@@ -1,0 +1,805 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AWS Mastery | Documentacion Profesional de Arquitectura Cloud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
+    :root {
+      --bg-0: #061120;
+      --bg-1: #0b1f36;
+      --panel: #0f243e;
+      --panel-2: #132f51;
+      --text: #e9f2ff;
+      --muted: #a8bfdc;
+      --line: #2f4f75;
+
+      --aws: #2f80ed;
+      --network: #27ae60;
+      --k8s: #8e44ad;
+      --lb: #f2994a;
+      --security: #eb5757;
+
+      --ok: #27ae60;
+      --warn: #f2c94c;
+      --danger: #eb5757;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(47, 128, 237, 0.20), transparent 34%),
+        radial-gradient(circle at 80% 15%, rgba(142, 68, 173, 0.17), transparent 30%),
+        linear-gradient(160deg, var(--bg-0), var(--bg-1));
+      font-family: "Segoe UI", "IBM Plex Sans", "Trebuchet MS", sans-serif;
+      line-height: 1.5;
+    }
+
+    .shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    header {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(47, 128, 237, 0.20), rgba(15, 36, 62, 0.92));
+      padding: 26px;
+      box-shadow: 0 22px 45px rgba(0, 0, 0, 0.28);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 2.8vw, 2.6rem);
+      letter-spacing: 0.3px;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      max-width: 1100px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .badge {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .r { color: #d8ffe8; background: rgba(39, 174, 96, 0.18); border-color: rgba(39, 174, 96, 0.55); }
+    .c { color: #ffe1e1; background: rgba(235, 87, 87, 0.18); border-color: rgba(235, 87, 87, 0.55); }
+    .d { color: #fff6d5; background: rgba(242, 201, 76, 0.18); border-color: rgba(242, 201, 76, 0.55); }
+
+    section {
+      margin-top: 22px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(19, 47, 81, 0.70), rgba(15, 36, 62, 0.95));
+      padding: 20px;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.20);
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.3rem;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      margin: 16px 0 8px;
+      font-size: 1.05rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(160deg, rgba(19, 47, 81, 0.92), rgba(13, 33, 57, 0.92));
+      padding: 14px;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.45);
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.35);
+    }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 0.92rem; }
+
+    .tag {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+    }
+
+    .tag-r { color: #d8ffe8; background: rgba(39, 174, 96, 0.18); border-color: rgba(39, 174, 96, 0.55); }
+    .tag-c { color: #ffe1e1; background: rgba(235, 87, 87, 0.18); border-color: rgba(235, 87, 87, 0.55); }
+    .tag-d { color: #fff6d5; background: rgba(242, 201, 76, 0.18); border-color: rgba(242, 201, 76, 0.55); }
+
+    code, pre {
+      font-family: "Consolas", "JetBrains Mono", monospace;
+      font-size: 0.88rem;
+    }
+
+    pre {
+      margin: 8px 0 10px;
+      background: #071426;
+      border: 1px solid #315277;
+      border-radius: 10px;
+      padding: 12px;
+      overflow-x: auto;
+      color: #d6eeff;
+    }
+
+    .note {
+      border-left: 4px solid var(--warn);
+      border-radius: 8px;
+      background: rgba(242, 201, 76, 0.10);
+      padding: 10px 12px;
+      margin-top: 8px;
+    }
+
+    .diag-wrap {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(6, 17, 32, 0.45);
+      padding: 14px;
+      overflow-x: auto;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .legend span {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 2px 9px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .lg-aws { background: color-mix(in srgb, var(--aws) 35%, transparent); }
+    .lg-net { background: color-mix(in srgb, var(--network) 35%, transparent); }
+    .lg-k8s { background: color-mix(in srgb, var(--k8s) 35%, transparent); }
+    .lg-lb { background: color-mix(in srgb, var(--lb) 35%, transparent); }
+    .lg-sec { background: color-mix(in srgb, var(--security) 35%, transparent); }
+
+    .flow-vertical {
+      min-width: 760px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .node {
+      width: min(640px, 96%);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      padding: 10px 12px;
+      text-align: center;
+      font-weight: 700;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .node:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.32);
+    }
+
+    .node small { display: block; font-weight: 400; opacity: 0.95; }
+
+    .aws { background: linear-gradient(160deg, rgba(47, 128, 237, 0.70), rgba(47, 128, 237, 0.32)); }
+    .network { background: linear-gradient(160deg, rgba(39, 174, 96, 0.70), rgba(39, 174, 96, 0.32)); }
+    .k8s { background: linear-gradient(160deg, rgba(142, 68, 173, 0.70), rgba(142, 68, 173, 0.32)); }
+    .lb { background: linear-gradient(160deg, rgba(242, 153, 74, 0.70), rgba(242, 153, 74, 0.32)); }
+    .security { background: linear-gradient(160deg, rgba(235, 87, 87, 0.70), rgba(235, 87, 87, 0.32)); }
+
+    .arrow {
+      width: 4px;
+      height: 26px;
+      border-radius: 99px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.95));
+      position: relative;
+      animation: pulse 1.7s ease-in-out infinite;
+    }
+
+    .arrow::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -7px;
+      transform: translateX(-50%);
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 10px solid rgba(255, 255, 255, 0.9);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.48; transform: scaleY(0.95); }
+      50% { opacity: 1; transform: scaleY(1.05); }
+    }
+
+    .vpc-box {
+      min-width: 960px;
+      border: 2px dashed rgba(39, 174, 96, 0.75);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(39, 174, 96, 0.10);
+    }
+
+    .row {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
+      margin-top: 10px;
+    }
+
+    .subnet {
+      border: 1px solid rgba(39, 174, 96, 0.7);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(12, 35, 27, 0.65);
+    }
+
+    .subnet h4 { margin: 2px 0 8px; }
+
+    .mini-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mini {
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      padding: 8px;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .table th, .table td {
+      border: 1px solid #355980;
+      padding: 9px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    .table th {
+      background: #102846;
+    }
+
+    .table td {
+      background: rgba(8, 22, 40, 0.9);
+    }
+
+    footer {
+      margin: 20px 0 10px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 900px) {
+      .row { grid-template-columns: 1fr; }
+      .flow-vertical { min-width: 100%; }
+      .vpc-box { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <h1>AWS + Kubernetes (EKS) - Documentacion de Arquitectura Senior</h1>
+      <p class="subtitle">
+        Documento tecnico orientado a portafolio y entrevista senior. Incluye arquitectura de referencia enterprise,
+        comandos AWS CLI/Kubectl para creacion, verificacion y debugging, y diagramas visuales en HTML + CSS.
+      </p>
+      <div class="badges">
+        <span class="badge r">[REUTILIZABLE] Base networking y patrones de despliegue</span>
+        <span class="badge c">[CRITICO] Seguridad SG + health checks + path routing</span>
+        <span class="badge d">[DEPENDE] IDs, CIDR, cuenta AWS, estrategia por ambiente</span>
+      </div>
+    </header>
+
+    <!-- INPUT NOTA: reemplaza IDs y nombres con tus recursos reales del entorno -->
+    <section>
+      <h2>0) Supuestos operativos y convenciones</h2>
+      <div class="grid">
+        <article class="card">
+          <strong>Region</strong>
+          <p class="small muted">us-east-1 (ajustable por ambiente).</p>
+        </article>
+        <article class="card">
+          <strong>Patron de entrada</strong>
+          <p class="small muted">Internet -> API Gateway HTTP API -> VPC Link -> NLB interno -> EKS NodePort -> Pod.</p>
+        </article>
+        <article class="card">
+          <strong>Matriz de ambientes</strong>
+          <p class="small muted">Separar cuentas por `dev`, `qa`, `prod` cuando se requiera aislamiento fuerte.</p>
+        </article>
+      </div>
+      <pre><code># Variables recomendadas (ajusta valores)
+export AWS_REGION="us-east-1"
+export CLUSTER_NAME="app-cluster"
+export VPC_ID="vpc-xxxxxxxx"
+export SUBNET_A="subnet-aaaa"
+export SUBNET_B="subnet-bbbb"
+export CLUSTER_SG="sg-cluster"
+export BACKEND_SG="sg-backend"
+export API_ID="api-id"
+export VPC_LINK_ID="vpclink-id"</code></pre>
+    </section>
+
+    <!-- ==================== DIAGRAMA 1 ==================== -->
+    <section>
+      <h2>1) Flujo completo de request</h2>
+      <div class="diag-wrap">
+        <div class="legend">
+          <span class="lg-aws">AWS</span>
+          <span class="lg-net">Red</span>
+          <span class="lg-k8s">Kubernetes</span>
+          <span class="lg-lb">Load Balancer</span>
+          <span class="lg-sec">Seguridad</span>
+        </div>
+        <div class="flow-vertical">
+          <div class="node aws">Cliente (Web/Mobile/Postman)<small>HTTPS request publico</small></div>
+          <div class="arrow"></div>
+          <div class="node aws">API Gateway (HTTP API)<small>Autorizacion, throttling, routing por stage</small></div>
+          <div class="arrow"></div>
+          <div class="node network">VPC Link<small>Canal privado hacia VPC sin exponer backend a Internet</small></div>
+          <div class="arrow"></div>
+          <div class="node lb">Network Load Balancer (interno)<small>Forward TCP al Target Group</small></div>
+          <div class="arrow"></div>
+          <div class="node security">Security Groups + NACL<small>Control de trafico permitido (puertos/rangos origen)</small></div>
+          <div class="arrow"></div>
+          <div class="node k8s">EKS Worker Node (EC2)<small>Recibe NodePort y reenvia al Pod</small></div>
+          <div class="arrow"></div>
+          <div class="node k8s">Pod (Deployment app-service)<small>Contenedor backend expone `:8080`</small></div>
+        </div>
+      </div>
+      <p class="note small"><strong>Decision tecnica:</strong> API Gateway desacopla capa publica; VPC Link + NLB evita publicar nodos/pods. Este patron reduce superficie de ataque y centraliza politicas de entrada.</p>
+    </section>
+
+    <!-- ==================== RED ==================== -->
+    <section>
+      <h2>2) Red (VPC, Subnets, Route Tables)</h2>
+      <div class="grid">
+        <article class="card">
+          <strong>VPC</strong><span class="tag tag-r">[REUTILIZABLE]</span>
+          <p class="small">Es el dominio de red aislado de AWS. Define CIDR global y limites de enrutamiento interno.</p>
+          <p class="small muted">Interaccion: contiene subnets, route tables, NLB, ENI de VPC Link y nodos EKS.</p>
+        </article>
+        <article class="card">
+          <strong>Subnets</strong><span class="tag tag-d">[DEPENDE]</span>
+          <p class="small">Segmentan IPs por AZ. Para alta disponibilidad usa al menos dos AZ.</p>
+          <p class="small muted">Interaccion: EKS node group y NLB consumen subnets para distribuir trafico.</p>
+        </article>
+        <article class="card">
+          <strong>Route Tables</strong><span class="tag tag-c">[CRITICO]</span>
+          <p class="small">Definen rutas locales y salidas (`0.0.0.0/0`) via IGW/NAT segun modelo.</p>
+          <p class="small muted">Interaccion: si ruta es incorrecta, nodos fallan pull de imagen o registro en control plane.</p>
+        </article>
+      </div>
+
+      <h3>Comandos de creacion</h3>
+      <pre><code>aws ec2 create-vpc --cidr-block 10.10.0.0/16
+aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.10.0.0/20 --availability-zone us-east-1a
+aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.10.16.0/20 --availability-zone us-east-1b
+aws ec2 create-route-table --vpc-id $VPC_ID
+aws ec2 create-route --route-table-id rtb-xxxx --destination-cidr-block 0.0.0.0/0 --gateway-id igw-xxxx</code></pre>
+
+      <h3>Comandos de verificacion</h3>
+      <pre><code>aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[0].[VpcId,CidrBlock,State]" --output table
+aws ec2 describe-subnets --filters Name=vpc-id,Values=$VPC_ID --output table
+aws ec2 describe-route-tables --filters Name=vpc-id,Values=$VPC_ID --output table</code></pre>
+
+      <h3>Comandos de debugging</h3>
+      <pre><code>aws ec2 describe-network-acls --filters Name=vpc-id,Values=$VPC_ID --output table
+aws ec2 describe-route-tables --route-table-ids rtb-xxxx --query "RouteTables[0].Routes" --output json</code></pre>
+    </section>
+
+    <!-- ==================== DIAGRAMA 2 ==================== -->
+    <section>
+      <h2>3) Diagrama de red (VPC + Subnets + SG)</h2>
+      <div class="diag-wrap">
+        <div class="legend">
+          <span class="lg-net">Red</span>
+          <span class="lg-sec">Seguridad</span>
+          <span class="lg-k8s">Kubernetes</span>
+          <span class="lg-lb">Load Balancer</span>
+        </div>
+
+        <!-- VPC container -->
+        <div class="vpc-box">
+          <strong>VPC 10.10.0.0/16</strong>
+          <div class="row">
+            <div class="subnet">
+              <h4>Subnet A (us-east-1a) - 10.10.0.0/20</h4>
+              <div class="mini-stack">
+                <div class="mini security">SG Cluster: permite trafico control plane + NodePort interno</div>
+                <div class="mini k8s">EKS Node (EC2)</div>
+                <div class="mini k8s">Pods app-service</div>
+              </div>
+            </div>
+            <div class="subnet">
+              <h4>Subnet B (us-east-1b) - 10.10.16.0/20</h4>
+              <div class="mini-stack">
+                <div class="mini security">SG Backend/VPC Link: trafico privado permitido</div>
+                <div class="mini lb">NLB Interno + Target Group</div>
+                <div class="mini network">ENI del VPC Link</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="note small"><strong>Decision tecnica:</strong> separar por AZ minimiza blast radius. SG deben restringir origen y puerto, evitando reglas abiertas por defecto.</p>
+    </section>
+
+    <!-- ==================== SEGURIDAD ==================== -->
+    <section>
+      <h2>4) Seguridad (Security Groups)</h2>
+      <div class="grid">
+        <article class="card">
+          <strong>SG Cluster / Node</strong><span class="tag tag-c">[CRITICO]</span>
+          <p class="small">Permite trafico necesario entre nodos, control plane y NodePort para NLB interno.</p>
+        </article>
+        <article class="card">
+          <strong>SG VPC Link / NLB</strong><span class="tag tag-c">[CRITICO]</span>
+          <p class="small">Habilita salto privado API Gateway -> NLB y NLB -> node targets.</p>
+        </article>
+        <article class="card">
+          <strong>Principio de minimo privilegio</strong><span class="tag tag-r">[REUTILIZABLE]</span>
+          <p class="small">Restringir por CIDR origen y puertos exactos evita accesos laterales no deseados.</p>
+        </article>
+      </div>
+
+      <h3>Comandos de creacion</h3>
+      <pre><code>aws ec2 create-security-group --group-name eks-cluster-sg --description "EKS Cluster SG" --vpc-id $VPC_ID
+aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG --protocol tcp --port 30000-32767 --cidr 10.10.0.0/16
+aws ec2 authorize-security-group-ingress --group-id $BACKEND_SG --protocol tcp --port 80 --source-group $CLUSTER_SG</code></pre>
+
+      <h3>Comandos de verificacion</h3>
+      <pre><code>aws ec2 describe-security-groups --group-ids $CLUSTER_SG $BACKEND_SG --output table
+aws ec2 describe-security-group-rules --filters Name=group-id,Values=$CLUSTER_SG --output table</code></pre>
+
+      <h3>Comandos de debugging</h3>
+      <pre><code># Revisar si faltan reglas para NodePort cuando targets salen unhealthy
+aws ec2 describe-security-groups --group-ids $CLUSTER_SG --query "SecurityGroups[0].IpPermissions" --output json</code></pre>
+    </section>
+
+    <!-- ==================== COMPUTE ==================== -->
+    <section>
+      <h2>5) Compute (EKS + EC2)</h2>
+      <div class="grid">
+        <article class="card">
+          <strong>EKS Cluster</strong><span class="tag tag-r">[REUTILIZABLE]</span>
+          <p class="small">Control plane administrado por AWS. Orquesta workloads, scheduling y estado del cluster.</p>
+          <p class="small muted">Interaccion: recibe despliegues kubectl y asigna Pods a nodos EC2.</p>
+        </article>
+        <article class="card">
+          <strong>Managed Node Group (EC2)</strong><span class="tag tag-d">[DEPENDE]</span>
+          <p class="small">Capacidad computacional para ejecutar pods. Tipo/escala depende del perfil de carga.</p>
+          <p class="small muted">Interaccion: recibe trafico desde NLB en NodePort y lo enruta a pods.</p>
+        </article>
+      </div>
+
+      <h3>Comandos de creacion</h3>
+      <pre><code>aws eks create-cluster \
+  --name $CLUSTER_NAME \
+  --region $AWS_REGION \
+  --role-arn arn:aws:iam::ACCOUNT_ID:role/eksClusterRole \
+  --resources-vpc-config subnetIds=$SUBNET_A,$SUBNET_B,securityGroupIds=$CLUSTER_SG
+
+aws eks create-nodegroup \
+  --cluster-name $CLUSTER_NAME \
+  --nodegroup-name app-ng \
+  --node-role arn:aws:iam::ACCOUNT_ID:role/eksNodeRole \
+  --subnets $SUBNET_A $SUBNET_B \
+  --scaling-config minSize=2,maxSize=6,desiredSize=2 \
+  --instance-types t3.medium</code></pre>
+
+      <h3>Comandos de verificacion</h3>
+      <pre><code>aws eks describe-cluster --name $CLUSTER_NAME --region $AWS_REGION --query "cluster.status" --output text
+aws eks list-nodegroups --cluster-name $CLUSTER_NAME --region $AWS_REGION
+kubectl get nodes -o wide</code></pre>
+
+      <h3>Comandos de debugging</h3>
+      <pre><code>kubectl describe node <node-name>
+kubectl top nodes
+aws ec2 describe-instances --filters Name=tag:eks:cluster-name,Values=$CLUSTER_NAME --output table</code></pre>
+    </section>
+
+    <!-- ==================== KUBERNETES ==================== -->
+    <section>
+      <h2>6) Kubernetes (Deployment + Service)</h2>
+      <div class="grid">
+        <article class="card">
+          <strong>Deployment</strong><span class="tag tag-r">[REUTILIZABLE]</span>
+          <p class="small">Define replicas, imagen, probes y estrategia rolling update.</p>
+        </article>
+        <article class="card">
+          <strong>Service (LoadBalancer)</strong><span class="tag tag-c">[CRITICO]</span>
+          <p class="small">Provisiona NLB en AWS y enruta al backend via NodePort (targetType instance).</p>
+        </article>
+        <article class="card">
+          <strong>Health checks</strong><span class="tag tag-c">[CRITICO]</span>
+          <p class="small">Readiness/liveness alineadas con endpoint real para evitar `unhealthy` falso.</p>
+        </article>
+      </div>
+
+      <h3>Comandos de creacion</h3>
+      <pre><code>kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml</code></pre>
+
+      <h3>Comandos de verificacion</h3>
+      <pre><code>kubectl get deployment app-service
+kubectl get pods -l app=app-service -o wide
+kubectl get svc app-service -o wide
+kubectl describe svc app-service</code></pre>
+
+      <h3>Comandos de debugging</h3>
+      <pre><code>kubectl describe pod <pod-name>
+kubectl logs -f deployment/app-service
+kubectl rollout status deployment/app-service
+kubectl exec -it <pod-name> -- sh</code></pre>
+    </section>
+
+    <!-- ==================== NETWORKING ==================== -->
+    <section>
+      <h2>7) Networking (NLB + Target Groups)</h2>
+      <div class="grid">
+        <article class="card">
+          <strong>NLB interno</strong><span class="tag tag-r">[REUTILIZABLE]</span>
+          <p class="small">Balanceador L4 de alto rendimiento para trafico privado y estable.</p>
+        </article>
+        <article class="card">
+          <strong>Target Group</strong><span class="tag tag-c">[CRITICO]</span>
+          <p class="small">Registra nodos (o IPs). Su health status define disponibilidad real de backend.</p>
+        </article>
+      </div>
+
+      <h3>Comandos de creacion</h3>
+      <pre><code># Con Service tipo LoadBalancer, EKS crea NLB/TG automaticamente.
+# Para control manual (opcional) usar aws elbv2 create-load-balancer/create-target-group.</code></pre>
+
+      <h3>Comandos de verificacion</h3>
+      <pre><code>aws elbv2 describe-load-balancers --query "LoadBalancers[*].[LoadBalancerName,Scheme,Type,DNSName]" --output table
+aws elbv2 describe-target-groups --output table
+aws elbv2 describe-target-health --target-group-arn <tg-arn> --output table</code></pre>
+
+      <h3>Comandos de debugging</h3>
+      <pre><code># Si target esta unhealthy, validar puerto NodePort y ruta health
+kubectl get svc app-service -o jsonpath='{.spec.ports[0].nodePort}'
+kubectl get endpoints app-service
+kubectl run net-debug --rm -it --image=curlimages/curl -- sh
+curl -i http://app-service.default.svc.cluster.local/health</code></pre>
+    </section>
+
+    <!-- ==================== API GATEWAY + VPC LINK ==================== -->
+    <section>
+      <h2>8) API Gateway + VPC Link</h2>
+      <div class="grid">
+        <article class="card">
+          <strong>HTTP API Gateway</strong><span class="tag tag-r">[REUTILIZABLE]</span>
+          <p class="small">Frontera publica de la API. Habilita rutas, throttling, auth y observabilidad.</p>
+        </article>
+        <article class="card">
+          <strong>VPC Link</strong><span class="tag tag-r">[REUTILIZABLE]</span>
+          <p class="small">Conector privado hacia NLB interno sin publicar backend.</p>
+        </article>
+        <article class="card">
+          <strong>Path mapping</strong><span class="tag tag-c">[CRITICO]</span>
+          <p class="small">Evita romper rutas por stage prefix (`/prod`) con `overwrite:path`.</p>
+        </article>
+      </div>
+
+      <h3>Comandos de creacion</h3>
+      <pre><code>aws apigatewayv2 create-vpc-link --name app-vpc-link --subnet-ids $SUBNET_A $SUBNET_B --security-group-ids $BACKEND_SG
+aws apigatewayv2 create-api --name app-http-api --protocol-type HTTP
+aws apigatewayv2 create-integration --api-id $API_ID --integration-type HTTP_PROXY --integration-method ANY --connection-type VPC_LINK --connection-id $VPC_LINK_ID --integration-uri <nlb-listener-arn> --payload-format-version 1.0
+aws apigatewayv2 create-route --api-id $API_ID --route-key "ANY /{proxy+}" --target integrations/<integration-id>
+aws apigatewayv2 create-stage --api-id $API_ID --stage-name prod --auto-deploy</code></pre>
+
+      <h3>Comandos de verificacion</h3>
+      <pre><code>aws apigatewayv2 get-vpc-links
+aws apigatewayv2 get-routes --api-id $API_ID
+aws apigatewayv2 get-integrations --api-id $API_ID</code></pre>
+
+      <h3>Comandos de debugging</h3>
+      <pre><code>aws apigatewayv2 update-integration --api-id $API_ID --integration-id <integration-id> --request-parameters '{"overwrite:path":"$request.path"}'
+curl -i https://$API_ID.execute-api.$AWS_REGION.amazonaws.com/prod/health
+curl -i https://$API_ID.execute-api.$AWS_REGION.amazonaws.com/health</code></pre>
+    </section>
+
+    <!-- ==================== DIAGRAMA 3 ==================== -->
+    <section>
+      <h2>9) Flujo de despliegue (Docker -> ECR -> EKS -> Exposicion)</h2>
+      <div class="diag-wrap">
+        <div class="flow-vertical">
+          <div class="node aws">Build local Docker image<small>`docker build` en pipeline CI/CD</small></div>
+          <div class="arrow"></div>
+          <div class="node aws">Push a Amazon ECR<small>Repositorio versionado por tags inmutables</small></div>
+          <div class="arrow"></div>
+          <div class="node k8s">Deployment en EKS<small>Rolling update controlado por readiness/liveness</small></div>
+          <div class="arrow"></div>
+          <div class="node k8s">Service (LoadBalancer/NodePort)<small>Expone backend internamente al NLB</small></div>
+          <div class="arrow"></div>
+          <div class="node lb">NLB + Target Group<small>Health checks y distribucion de trafico</small></div>
+          <div class="arrow"></div>
+          <div class="node aws">API Gateway + VPC Link<small>Exposicion publica gobernada y trazable</small></div>
+        </div>
+      </div>
+
+      <h3>Comandos de creacion</h3>
+      <pre><code>aws ecr create-repository --repository-name app-service
+aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+docker build -t app-service:1.0.0 .
+docker tag app-service:1.0.0 ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/app-service:1.0.0
+docker push ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/app-service:1.0.0
+kubectl set image deployment/app-service app-service=ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/app-service:1.0.0</code></pre>
+
+      <h3>Comandos de verificacion</h3>
+      <pre><code>aws ecr describe-images --repository-name app-service --output table
+kubectl rollout status deployment/app-service
+kubectl get pods -l app=app-service -o wide</code></pre>
+
+      <h3>Comandos de debugging</h3>
+      <pre><code># Imagen invalida o pull fallido
+kubectl describe pod <pod-name>
+kubectl get events --sort-by=.lastTimestamp
+aws ecr list-images --repository-name app-service</code></pre>
+    </section>
+
+    <section>
+      <h2>10) Troubleshooting tecnico (fallas comunes)</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Sintoma</th>
+            <th>Causa probable</th>
+            <th>Comando clave</th>
+            <th>Accion recomendada</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>NLB targets `unhealthy`</td>
+            <td>NodePort bloqueado en SG o health endpoint incorrecto</td>
+            <td><code>aws elbv2 describe-target-health --target-group-arn &lt;tg-arn&gt;</code></td>
+            <td>Abrir puerto NodePort 30000-32767 interno y validar readiness path.</td>
+          </tr>
+          <tr>
+            <td>API Gateway 5xx</td>
+            <td>Integracion VPC Link/listener ARN invalida</td>
+            <td><code>aws apigatewayv2 get-integrations --api-id $API_ID</code></td>
+            <td>Verificar `connection-id`, `integration-uri` y estado del VPC Link.</td>
+          </tr>
+          <tr>
+            <td>404 por stage</td>
+            <td>Path forwarding incorrecto (`/prod` agregado)</td>
+            <td><code>aws apigatewayv2 update-integration ... overwrite:path</code></td>
+            <td>Aplicar rewrite de path y revalidar rutas `ANY /` + `ANY /{proxy+}`.</td>
+          </tr>
+          <tr>
+            <td>Pod en CrashLoopBackOff</td>
+            <td>Config de app, secretos o probes mal ajustadas</td>
+            <td><code>kubectl logs -f deployment/app-service</code></td>
+            <td>Corregir variables/secrets y temporizacion de probes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>11) Reutilizacion futura y decisiones de entorno</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Componente</th>
+            <th>Estado</th>
+            <th>Criterio tecnico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Patron API Gateway -> VPC Link -> NLB -> EKS</td>
+            <td>[REUTILIZABLE]</td>
+            <td>Valido para microservicios internos con exposicion publica controlada.</td>
+          </tr>
+          <tr>
+            <td>VPC y subnets</td>
+            <td>[DEPENDE]</td>
+            <td>Reutilizar en el mismo dominio de seguridad; recrear para aislamiento estricto por cliente/ambiente.</td>
+          </tr>
+          <tr>
+            <td>Security Groups</td>
+            <td>[CRITICO]</td>
+            <td>No copiar ciegamente: puertos, origenes y CIDR deben ajustarse por servicio.</td>
+          </tr>
+          <tr>
+            <td>EKS cluster</td>
+            <td>[DEPENDE]</td>
+            <td>Compartir cluster reduce costo; separar cluster reduce blast radius y simplifica compliance.</td>
+          </tr>
+          <tr>
+            <td>Manifiestos Deployment/Service</td>
+            <td>[REUTILIZABLE]</td>
+            <td>Versionables via Helm/Kustomize con parametros por ambiente.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>12) Flujo operativo recomendado (end-to-end)</h2>
+      <pre><code>1) Preparar red base y SG
+2) Crear EKS cluster + node group
+3) Publicar imagen en ECR
+4) Desplegar Deployment + Service
+5) Confirmar NLB/TG healthy
+6) Crear API Gateway + VPC Link + rutas
+7) Ejecutar smoke tests curl
+8) Activar observabilidad (CloudWatch + metricas de app)
+9) Documentar IDs finales y runbooks de incidentes</code></pre>
+      <p class="note small">
+        Esta plantilla es production-style y lista para personalizar con tus IDs reales. Si compartes tu documento base,
+        se puede hacer una version 100% aterrizada a tus recursos exactos.
+      </p>
+    </section>
+
+    <footer>
+      Arquitectura AWS + EKS | HTML + CSS puro | Diagramas visuales animados sin JavaScript
+    </footer>
+  </div>
+</body>
+</html>
