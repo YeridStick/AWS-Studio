@@ -8,6 +8,7 @@ import Networking from './views/Networking'
 import Security from './views/Security'
 import Kubernetes from './views/Kubernetes'
 import Commands from './views/Commands'
+import DynamoDBCommands from './views/DynamoDBCommands'
 import Troubleshooting from './views/Troubleshooting'
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/security" element={<Security />} />
         <Route path="/kubernetes" element={<Kubernetes />} />
         <Route path="/commands" element={<Commands />} />
+        <Route path="/dynamodb" element={<DynamoDBCommands />} />
         <Route path="/troubleshooting" element={<Troubleshooting />} />
       </Routes>
     </Layout>

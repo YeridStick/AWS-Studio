@@ -14,7 +14,8 @@ import {
   X,
   ChevronRight,
   Sparkles,
-  GitBranch
+  GitBranch,
+  Database
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import SearchAssistant from './SearchAssistant'
@@ -48,6 +49,7 @@ const navItems = [
     section: 'Operaciones',
     items: [
       { path: '/commands', label: 'Comandos CLI', icon: Terminal },
+      { path: '/dynamodb', label: 'DynamoDB', icon: Database },
       { path: '/troubleshooting', label: 'Troubleshooting', icon: AlertTriangle },
     ]
   },
